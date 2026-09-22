@@ -1,6 +1,6 @@
 # 오늘도 퇴근 — 개인정보처리방침
 
-Windows 위젯 앱 **오늘도 퇴근**(Microsoft Store)의 개인정보처리방침입니다.
+Windows 위젯 앱 **오늘도 퇴근**([Microsoft Store](https://apps.microsoft.com/detail/9P4CV3XZ7SS9))의 개인정보처리방침입니다.
 
 👉 **[방침 전문 보기](https://dang0321.github.io/clockout-privacy/)**
 
