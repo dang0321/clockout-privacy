@@ -45,13 +45,18 @@
     <tr><td>스토어 주소</td><td><a href="https://apps.microsoft.com/detail/9P4CV3XZ7SS9">https://apps.microsoft.com/detail/9P4CV3XZ7SS9</a></td></tr>
     <tr><td>종류</td><td>바탕화면 위젯 (WPF 데스크톱 앱)</td></tr>
     <tr><td>대상</td><td>Windows 10 2004(19041) 이상</td></tr>
-    <tr><td>네트워크</td><td><strong>사용하지 않음</strong> (서버 통신, 업데이트 확인, 통계 전송 모두 없음)</td></tr>
+    <tr><td>네트워크</td><td><strong>Microsoft Store 업데이트 확인만</strong> (1.0.3부터, 끌 수 있음). 그 밖의 서버 통신&#183;통계 전송은 없음</td></tr>
     <tr><td>수집&#183;전송하는 정보</td><td><strong>없음.</strong> 입력한 값은 이 PC에만 저장됩니다</td></tr>
     <tr><td>요구 권한</td><td>MSIX <code>runFullTrust</code> 하나 (일반 데스크톱 앱 공통)</td></tr>
     <tr><td>설치 권한</td><td>사용자 단위 설치라 관리자 권한이 필요 없습니다</td></tr>
   </table>
   <h2>네트워크</h2>
-  <p>앱에 HTTP&#183;소켓 통신 코드가 없습니다. 공휴일 정보도 앱 안에 들어 있어 외부에서 받아오지 않습니다. 따라서 방화벽&#183;프록시 설정이 필요 없고, 사내 정보가 밖으로 나갈 경로가 없습니다.</p>
+  <p>1.0.3부터 <strong>자동 업데이트</strong>가 있습니다. Windows의 스토어 기능(<code>Windows.Services.Store</code>의 <code>StoreContext</code>)으로 6시간마다 새 버전이 있는지 묻고, 있으면 Microsoft Store에서 받아 위젯을 쓰지 않을 때 설치합니다. 연결은 Windows가 Microsoft Store와 하고, 앱이 직접 여는 연결은 없습니다. 입력한 내용은 보내지 않습니다.</p>
+  <ul>
+    <li><strong>끄는 방법:</strong> 설정 → 일반 → 자동 업데이트, 또는 &quot;회사 PC에 맞추기&quot;. 끄면 업데이트를 확인하지 않습니다.</li>
+    <li>끄더라도 Microsoft Store 자체의 앱 자동 업데이트(앱이 꺼져 있을 때 설치)는 Windows&#183;스토어 설정을 따릅니다.</li>
+  </ul>
+  <p>그 밖에 HTTP&#183;소켓 통신 코드는 없습니다. 공휴일 정보도 앱 안에 들어 있어 외부에서 받아오지 않습니다. 따라서 방화벽&#183;프록시 설정이 필요 없고, 사내 정보가 밖으로 나갈 경로가 없습니다.</p>
   <h2>저장하는 것과 위치</h2>
   <p>사용자가 넣은 근무 시간, 월급(선택), 일정&#183;할 일&#183;디데이, 휴가, 점심 메뉴, 화면 설정이 JSON 파일 하나에 저장됩니다.</p>
   <ul>
@@ -66,7 +71,10 @@
     <tr><td>전체 화면 앱 실행 여부 확인</td><td>발표&#183;영상 중 위젯 자동 숨김</td><td>켬</td></tr>
     <tr><td>화면 캡처 제외 (<code>SetWindowDisplayAffinity</code>)</td><td>&quot;화면 공유에서 숨기기&quot;</td><td><strong>끔</strong></td></tr>
     <tr><td>시작 프로그램 등록 (MSIX StartupTask)</td><td>&quot;Windows 시작 시 자동 실행&quot;</td><td>설치 직후 <strong>끔</strong>. 처음 켤 때 안내에서 켜진 채로 제안해 [시작하기]를 누르면 등록. 안내를 건너뛰거나, 끄거나, &quot;회사 PC에서 써요&quot;를 고르면 등록하지 않음</td></tr>
-    <tr><td>Windows 알림</td><td>퇴근&#183;휴식 알림</td><td>퇴근 알림만 켬</td></tr>
+    <tr><td>Windows 알림</td><td>퇴근&#183;휴식&#183;일정 알림, 새 버전 알림</td><td>퇴근 알림만 켬</td></tr>
+    <tr><td>스토어 업데이트 확인&#183;설치 (<code>StoreContext</code>)</td><td>자동 업데이트</td><td>켬. &quot;회사 PC에 맞추기&quot;로 끔</td></tr>
+    <tr><td>다시 시작 등록 (<code>RegisterApplicationRestart</code>)</td><td>업데이트를 설치한 뒤 위젯을 다시 켜기</td><td>업데이트를 설치할 때만</td></tr>
+    <tr><td>작업 집합 비우기 (<code>SetProcessWorkingSetSize</code>)</td><td>1분 넘게 쓰지 않으면 메모리를 Windows에 돌려주기</td><td>항상</td></tr>
   </table>
   <p>키보드&#183;마우스 후킹, 다른 프로세스 접근, 화면 녹화, 파일 검색 같은 동작은 하지 않습니다.</p>
   <h2>&quot;화면 공유에서 숨기기&quot;에 대해</h2>
@@ -79,10 +87,10 @@
   <h2>회사 PC에 맞추기</h2>
   <p>사용자가 한 번에 설정할 수 있는 항목을 앱 안에 두었습니다.</p>
   <ul>
-    <li><strong>설정 → 숨기기 → 회사 PC에 맞추기 [적용]</strong>: 자동 실행 끔, 금액 숨기기 켬, 화면 공유에서 숨기기 끔</li>
+    <li><strong>설정 → 숨기기 → 회사 PC에 맞추기 [적용]</strong>: 자동 실행 끔, 자동 업데이트 끔, 금액 숨기기 켬, 화면 공유에서 숨기기 끔</li>
     <li><strong>처음 켤 때 3단계의 &quot;회사 PC에서 써요&quot;</strong>: 같은 값으로 시작합니다.</li>
   </ul>
-  <p>회사에서 배포&#183;안내할 때 이 항목을 알려 주시면, 시작 프로그램 등록과 화면 캡처 제외를 쓰지 않는 상태로 쓸 수 있습니다.</p>
+  <p>회사에서 배포&#183;안내할 때 이 항목을 알려 주시면, 시작 프로그램 등록, 화면 캡처 제외, 스토어 업데이트 확인을 쓰지 않는 상태로 쓸 수 있습니다.</p>
   <h2>배포 통제</h2>
   <ul>
     <li>Microsoft Store에서 설치하며, 패키지는 마이크로소프트가 서명합니다.</li>
